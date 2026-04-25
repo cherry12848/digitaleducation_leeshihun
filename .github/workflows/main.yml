@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Root Writer - 시훈이를 위한 글쓰기 메이트</title>
+    <style>
+        :root { --p: #5f27cd; --s: #f3f0ff; --txt: #2d3436; }
+        body { font-family: 'Pretendard', sans-serif; background: #f8f9fa; display: flex; justify-content: center; padding: 20px; color: var(--txt); }
+        .container { width: 100%; max-width: 550px; background: white; border-radius: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); padding: 35px; min-height: 85vh; display: flex; flex-direction: column; }
+        .step { display: none; } .active { display: block; animation: fadeIn 0.4s; }
+        .badge { background: var(--s); color: var(--p); padding: 5px 12px; border-radius: 15px; font-weight: bold; font-size: 0.85rem; margin-right: 5px; }
+        textarea { width: 100%; min-height: 120px; border: 1.5px solid #eee; border-radius: 15px; padding: 15px; font-size: 1rem; margin-top: 15px; box-sizing: border-box; }
+        .card { background: #fff; border: 1.5px solid #eee; border-radius: 15px; padding: 15px; margin-top: 10px; cursor: pointer; }
+        .card:hover { border-color: var(--p); background: var(--s); }
+        .btn-main { background: var(--p); color: white; border: none; padding: 16px; border-radius: 15px; width: 100%; margin-top: 20px; cursor: pointer; font-size: 1rem; font-weight: bold; }
+        .btn-sub { background: #f1f2f6; color: #555; border: none; padding: 10px 15px; border-radius: 10px; margin-top: 10px; cursor: pointer; font-size: 0.9rem; }
+        .motivation { margin-top: auto; padding: 20px; background: #f1f2f6; border-radius: 15px; font-size: 0.9rem; text-align: center; border-left: 5px solid var(--p); color: #444; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- STEP 1 -->
+    <div id="step1" class="step active">
+        <span class="badge">1. 첫인상</span>
+        <h2 id="topic-title">주제: 교내 휴대폰 사용 제한</h2>
+        <p>시훈아, 이 주제를 들었을 때 머릿속에 가장 먼저 스치는 기분이나 장면은 뭐야? 정답은 없으니까 떠오르는 대로 자유롭게 적어보자.</p>
+        <textarea id="in1" placeholder="예: 가방 속에 갇힌 느낌, 답답함, 소통의 차단..."></textarea>
+        <button class="btn-main" onclick="go(2)">다음 생각으로 ➔</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step2" class="step">
+        <span class="badge">2. 경험 모으기</span>
+        <h2>시훈이가 겪은 일들을 나열해볼까?</h2>
+        <p>사소해도 괜찮아. 2~3가지 상황을 짧게 적어줘. '유치할까?'라는 걱정은 잠시 접어두고 그냥 있었던 사실을 나열해 보는 거야.</p>
+        <textarea id="in2" placeholder="1. 점심시간에 부모님께 급한 연락을 못 했을 때...&#10;2. 휴대폰을 걷느라 수업 시간이 5분 늦어졌을 때..."></textarea>
+        <button class="btn-main" onclick="analyzeAndGo(3)">공통점 발견하기 ➔</button>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step3" class="step">
+        <span class="badge">3. 핵심 원인 찾기</span>
+        <h2>네 경험들 속에 숨은 키워드야!</h2>
+        <div id="keyword-box" style="margin: 15px 0;"></div>
+        <p>이 키워드들을 보니 어떤 생각이 드니? 시훈이가 적어준 경험들이 왜 일어난 것 같은지, 시훈이가 느낀 <b>'진짜 불편함'</b>의 정체를 정의해보자.</p>
+        <textarea id="in3" placeholder="예: 학생들을 믿지 못하는 학교 분위기 때문인 것 같아요."></textarea>
+        <button class="btn-main" onclick="go(4)">표현 방식 고르기 ➔</button>
+    </div>
+
+    <!-- STEP 4 -->
+    <div id="step4" class="step">
+        <span class="badge">4. 표현의 스타일</span>
+        <h2>정리한 생각을 어떻게 보여줄까?</h2>
+        <p>시훈이가 찾은 '핵심 원인'을 좀 더 사회적인 용어로 다듬어볼 수 있어. 선택은 시훈이가 하는 거야!</p>
+        <button class="btn-sub" onclick="go(5, 'pro')">✨ 사회적 용어(자율권, 신뢰 등) 힌트 얻기</button>
+        <button class="btn-sub" onclick="go(5, 'basic')">🌱 나의 솔직한 표현 그대로 가기</button>
+    </div>
+
+    <!-- STEP 5 -->
+    <div id="step5" class="step">
+        <span class="badge">5. 글쓰기 전략 카드</span>
+        <h2>이제 글을 어떻게 풀어낼지 골라보자!</h2>
+        <div class="card"><b>서론:</b> <span id="intro-card"></span></div>
+        <div class="card"><b>본론:</b> 2단계에서 적은 경험들을 제시하고, 3단계에서 찾은 '공통 원인'을 통해 내 주장을 설득해봐.</div>
+        <div class="card"><b>결론:</b> 이 문제가 해결되었을 때 우리 학교가 얼마나 더 신뢰 깊은 곳이 될지 미래를 그리며 마무리해봐.</div>
+        <button class="btn-main" onclick="alert('시훈아, 완벽한 지도가 완성되었어! 이제 한 문장씩 시작해보자.')">지도 완성! 글쓰기 시작 ➔</button>
+    </div>
+
+    <!-- MOTIVATION FOOTER -->
+    <div class="motivation" id="moto">
+        "시훈아, 네가 느낀 사소한 불편함은 세상을 바꾸는 가장 중요한 단서란다. 너의 목소리는 충분히 가치 있어!"
+    </div>
+</div>
+
+<script>
+    function go(n, mode='') {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step'+n).classList.add('active');
+        if(n === 5) {
+            const intro = document.getElementById('intro-card');
+            intro.innerText = mode === 'pro' ? 
+                "학생의 '자율권'과 '책임'이라는 관점에서 질문을 던지며 글을 열어보면 어떨까?" :
+                "시훈이가 겪었던 가장 답답했던 그 순간의 기분을 솔직하게 고백하며 시작해봐.";
+        }
+    }
+    function analyzeAndGo(n) {
+        const text = document.getElementById('in2').value;
+        const keywords = ['불편', '신뢰', '연락', '규칙', '통제', '자율', '차단', '시간'];
+        const found = keywords.filter(k => text.includes(k));
+        const box = document.getElementById('keyword-box');
+        box.innerHTML = found.length > 0 ? found.map(k => `<span class="badge"># ${k}</span>`).join('') : "<span class='badge'># 시훈이의 고유한 경험</span>";
+        go(n);
+    }
+</script>
+</body>
+</html>
